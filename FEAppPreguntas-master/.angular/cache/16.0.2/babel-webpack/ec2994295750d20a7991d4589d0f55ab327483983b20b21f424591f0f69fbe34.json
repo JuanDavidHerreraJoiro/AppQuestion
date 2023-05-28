@@ -1,1 +1,0 @@
-{"ast":null,"code":"export class Respuesta {\n  constructor(descripcion, esCorrecta, id) {\n    this.id = id;\n    this.descripcion = descripcion;\n    this.esCorrecta = esCorrecta;\n  }\n}","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

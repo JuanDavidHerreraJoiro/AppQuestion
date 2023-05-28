@@ -19,25 +19,18 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 //2. Connection with SQL Server Express
-//const string CONNECTIONNAME = "UniversityDB";
-//var connectionString = builder.Configuration.GetConnectionString(CONNECTIONNAME);
-
 const string CONNECTIONNAME = "Conexion";
 var connectionString = builder.Configuration.GetConnectionString(CONNECTIONNAME);
 
 
 //3. Add Context
-//builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<AplicationDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 
 // Add services to the container.
-
-//builder.Services.AddControllers();
-
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
-                                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                            ); ;
+options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+); ;
 
 //4. Add Services
 
@@ -50,18 +43,11 @@ builder.Services.AddScoped<IRespuestaCuestionarioService, RespuestaCuestionarioS
 // Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-            builder.Services.AddScoped<ICuestionarioRepository, CuestionarioRepository>();
-            builder.Services.AddScoped<IRespuestaCuestionarioRepository, RespuestaCuestionarioRepository>();
-
-//Todo:
-
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ICuestionarioRepository, CuestionarioRepository>();
+builder.Services.AddScoped<IRespuestaCuestionarioRepository, RespuestaCuestionarioRepository>();
 
 //5. CORS Configuration
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
     {
         options.AddPolicy(
             name: "AllowWebapp",
@@ -74,6 +60,9 @@ builder.Services.AddCors(options =>
     }
 );
 
+//6
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
 
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "TheBackEnd", Version = "v1" });
@@ -90,34 +79,34 @@ builder.Services.AddSwaggerGen(c => {
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                    {
-                          new OpenApiSecurityScheme
-                          {
-                              Reference = new OpenApiReference
-                              {
-                                  Type = ReferenceType.SecurityScheme,
-                                  Id = "Bearer"
-                              }
-                          },
-                         new string[] {}
-                    }
-                });
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                            ValidAudience = builder.Configuration["Jwt:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
-                            ClockSkew = TimeSpan.Zero
-                        });
+    .AddJwtBearer(options =>
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+        ClockSkew = TimeSpan.Zero
+    });
 
 
 var app = builder.Build();
@@ -138,16 +127,13 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-//app.MapControllers();
+//7 Tell app to use CORS
+app.UseCors("AllowWebapp");
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
-//6 Tell app to use CORS
-//app.UseCors("CorsPolicy");
-app.UseCors("AllowWebapp");
 
 app.Run();
  

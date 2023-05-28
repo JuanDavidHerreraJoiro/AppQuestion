@@ -1,1 +1,0 @@
-{"ast":null,"code":"export class Pregunta {\n  constructor(descripcion, respuestas) {\n    this.descripcion = descripcion;\n    this.listRespuestas = respuestas;\n    this.hide = true;\n  }\n}","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

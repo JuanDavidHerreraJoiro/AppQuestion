@@ -38,10 +38,16 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                    "minify": true,
+                    "inlineCritical": false
+                },
+                "fonts": true
+              },
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -58,6 +64,14 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -69,8 +83,12 @@
           "configurations": {
             "production": {
               "browserTarget": "FrontEnd:build:production"
+            },
+            "development": { 
+              "browserTarget": "FrontEnd:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -123,7 +141,6 @@
       }
     }
   },
-  "defaultProject": "FrontEnd",
   "cli": {
     "analytics": "03d382a7-2b2b-47ee-83dc-f58b4e99d1c5"
   }
